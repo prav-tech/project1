@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 
 function App() {
-  // Sidebar active tab state
+  // Sidebar active tab state 
   const [activeTab, setActiveTab] = useState('Logistics');
 
   // Core customer data state
