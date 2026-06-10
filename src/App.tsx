@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   BarChart2, 
   TrendingUp, 
@@ -13,18 +13,49 @@ import {
   X, 
   Calendar, 
   Navigation, 
-  Eye, 
   CheckCircle,
   Clock,
   Compass
 } from 'lucide-react';
 
+interface Customer {
+  sNo: number;
+  code: string;
+  name: string;
+  address: string;
+  contact: string;
+  status: string;
+  checkedIn: boolean;
+  checkinTime: string | null;
+  notes: string;
+}
+
+interface Stats {
+  salesmanName: string;
+  salesmanCode: string;
+  routeName: string;
+  routeCode: string;
+  date: string;
+  scheduleCall: number;
+  visitedCall: string;
+  vehicle: string;
+  unscheduleCall: number;
+  pendingCall: number;
+  actualCall: number;
+  status: string;
+}
+
+interface Toast {
+  id: number;
+  message: string;
+}
+
 function App() {
-  // Sidebar active tab state 
-  const [activeTab, setActiveTab] = useState('Logistics');
+  // Sidebar active tab state
+  const [activeTab, setActiveTab] = useState<string>('Logistics');
 
   // Core customer data state
-  const [customers, setCustomers] = useState([
+  const [customers, setCustomers] = useState<Customer[]>([
     {
       sNo: 1,
       code: 'CUST005',
@@ -61,7 +92,7 @@ function App() {
   ]);
 
   // Dashboard Call Plan Stats state (initialized to match screenshot exactly)
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<Stats>({
     salesmanName: 'Harshith S Reddy',
     salesmanCode: 'EMP022',
     routeName: 'madhapur',
@@ -77,18 +108,18 @@ function App() {
   });
 
   // Search filter
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   // Modals state
-  const [activeModal, setActiveModal] = useState(null); // 'checkin', 'direction', 'profile'
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
-  const [checkinNote, setCheckinNote] = useState('');
+  const [activeModal, setActiveModal] = useState<'checkin' | 'direction' | 'profile' | null>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [checkinNote, setCheckinNote] = useState<string>('');
 
   // Toast notifications state
-  const [toasts, setToasts] = useState([]);
+  const [toasts, setToasts] = useState<Toast[]>([]);
 
   // Add toast helper
-  const addToast = (message) => {
+  const addToast = (message: string) => {
     const id = Date.now();
     setToasts((prev) => [...prev, { id, message }]);
     setTimeout(() => {
@@ -97,7 +128,7 @@ function App() {
   };
 
   // Open checkin modal
-  const handleOpenCheckin = (customer) => {
+  const handleOpenCheckin = (customer: Customer) => {
     if (customer.checkedIn) return;
     setSelectedCustomer(customer);
     setCheckinNote('');
@@ -105,7 +136,7 @@ function App() {
   };
 
   // Submit checkin
-  const handleSubmitCheckin = (e) => {
+  const handleSubmitCheckin = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedCustomer) return;
 
@@ -128,8 +159,6 @@ function App() {
       const currentVisited = prevStats.visitedCall === '-' ? 0 : parseInt(prevStats.visitedCall);
       const newVisited = currentVisited + 1;
       const newActual = prevStats.actualCall + 1;
-      // Pending calls decreases or stays 0 (if we start from 0 we keep it or adjust logically)
-      // Let's increment actual/visited calls to show progress
       return {
         ...prevStats,
         visitedCall: newVisited.toString(),
@@ -143,13 +172,13 @@ function App() {
   };
 
   // Open Direction modal
-  const handleOpenDirection = (customer) => {
+  const handleOpenDirection = (customer: Customer) => {
     setSelectedCustomer(customer);
     setActiveModal('direction');
   };
 
   // Open Profile details modal
-  const handleOpenProfile = (customer) => {
+  const handleOpenProfile = (customer: Customer) => {
     setSelectedCustomer(customer);
     setActiveModal('profile');
   };
@@ -406,7 +435,7 @@ function App() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="8" style={{ textAlign: 'center', padding: '32px', color: '#94a3b8' }}>
+                      <td colSpan={8} style={{ textAlign: 'center', padding: '32px', color: '#94a3b8' }}>
                         No customers found matching the search query.
                       </td>
                     </tr>
@@ -447,7 +476,7 @@ function App() {
                   <textarea 
                     id="checkin-notes"
                     className="form-control" 
-                    rows="4" 
+                    rows={4} 
                     placeholder="Enter any customer feedback, orders, or comments..."
                     value={checkinNote}
                     onChange={(e) => setCheckinNote(e.target.value)}
@@ -563,7 +592,7 @@ function App() {
             </div>
             <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: '#eff6ff', display: 'flex', alignItems: 'center', justifyOrigin: 'center', justifyContent: 'center', color: '#2563eb', fontWeight: '700', fontSize: '18px' }}>
+                <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb', fontWeight: '700', fontSize: '18px' }}>
                   {selectedCustomer.name.charAt(0)}
                 </div>
                 <div>
